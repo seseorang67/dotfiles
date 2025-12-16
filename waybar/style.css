@@ -1,0 +1,392 @@
+* {
+    /* `otf-font-awesome` is required to be installed for icons */
+    font-family: FontAwesome, SF Pro Display;
+    font-size: 13px;
+}
+
+window#waybar {
+    background-color: rgba(27, 27, 27, 0); /*rgba(28, 28, 28, 0);*/
+    border-bottom: /*3px solid rgba(100, 114, 125, 0)*/ none;
+    color: #ffffff;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/*
+window#waybar.empty {
+    background-color: transparent;
+}
+window#waybar.solo {
+    background-color: #FFFFFF;
+}
+*/
+
+window#waybar.termite {
+    background-color: #3F3F3F;
+}
+
+window#waybar.chromium {
+    background-color: #000000;
+    border: none;
+}
+
+button {
+    /* Use box-shadow instead of border so the text isn't offset */
+    box-shadow: inset 0 -3px transparent;
+    /* Avoid rounded borders under each button name */
+    border: none;
+    border-radius: 0;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+button:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+/* you can set a style on hover for any module like this */
+#pulseaudio:hover {
+    background-color: #a37800;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background-color: transparent;
+    color: #ffffff;
+}
+
+#workspaces button:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#workspaces button.focused {
+    background-color: #64727D;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+#workspaces button.urgent {
+    background-color: #eb4d4b;
+}
+
+#mode {
+    background-color: #64727D;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+#clock, #network, #pulseaudio {
+    background-color: #161616;
+	padding: 5px 10px;
+	margin-top: 8px;
+    margin-bottom: 0px;
+}
+
+#window,
+#workspaces {
+    background-color: #161616;
+    border-radius: 50px 0px 0px 50px;
+	margin-right: -7px;
+    margin-top: 8px;
+    margin-bottom: 0px;
+	margin-left: 10px;
+	padding-bottom: 2px;
+    padding: 2px 2px;
+}
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+}
+
+#clock {
+    color: #ffffff;
+    border-radius: 50px 50px 50px 50px;
+    margin-top: 8px;
+    margin-bottom: 0px;
+}
+
+#battery {
+    background-color: #161616;
+    color: #ffffff;
+    border-radius: 0px 50px 50px 0px;
+    margin-right: 10px;
+    margin-top: 8px;
+    margin-bottom: 0px;
+    padding: 5px;
+    padding-right: 15px;
+}
+
+#battery.charging, #battery.plugged {
+    color: #ffffff;
+    background-color: #26A65B;
+    border-radius: 0px 50px 50px 0px;
+    margin-right: 10px;
+    margin-top: 8px;
+    margin-bottom: 0px;
+    padding: 5px;
+    padding-right: 8px;
+
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
+/* Using steps() instead of linear as a timing function to limit cpu usage */
+#battery.critical:not(.charging) {
+    background-color: #f53c3c;
+    color: #ffffff;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px 10px;
+}
+
+#power-profiles-daemon {
+    padding-right: 15px;
+    margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px 10px;
+}
+
+#power-profiles-daemon.performance {
+    background-color: #161616;
+    color: #ffffff;
+    margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px 10px;
+}
+
+#power-profiles-daemon.balanced {
+    background-color: #161616;
+    color: #ffffff;
+    margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px 10px;
+}
+
+#power-profiles-daemon.power-saver {
+    background-color: #161616;
+    color: #ffffff;
+    margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px 10px;
+}
+
+label:focus {
+    background-color: #000000;
+}
+
+#cpu {
+    background-color: #161616;
+    color: #ffffff;
+    margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px;
+    padding-right: 10px;
+}
+
+#memory {
+    background-color: #161616;
+    margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px 10px;
+}
+
+#disk {
+    background-color: #161616;
+    margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px 10px;
+}
+
+#backlight {
+    background-color: #90b1b1;
+}
+
+#network
+
+#network.disconnected {
+    background-color: transparent;
+}
+
+#pulseaudio {
+    border-radius: 50px 0px 0px 50px;
+}
+
+#pulseaudio.muted {
+    border-radius: 50px 0px 0px 50px;
+}
+
+#wireplumber {
+    background-color: #fff0f5;
+    color: #000000;
+}
+
+#wireplumber.muted {
+    background-color: #f53c3c;
+}
+
+#custom-media {
+    background-color: #66cc99;
+    color: #2a5c45;
+    min-width: 100px;
+}
+
+#custom-media.custom-spotify {
+    background-color: #66cc99;
+}
+
+#custom-media.custom-vlc {
+    background-color: #ffa000;
+}
+
+#temperature {
+    background-color: #f0932b;
+}
+
+#temperature.critical {
+    background-color: #eb4d4b;
+}
+
+#tray {
+    background-color: /*#2980b9*/ transparent;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #eb4d4b;
+}
+
+#mpd {
+    background-color: #161616;
+    color: #ffffff;
+	padding: 5px 10px;
+	margin: 5px 0px;
+	border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px; 
+}
+
+#mpd.disconnected {
+    background-color: #161616;
+    color: #ffffff;
+	padding: 5px 10px;
+	margin: 5px 0px;
+	border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px; 
+}
+
+#mpd.stopped {
+    background-color: #161616;
+    color: #ffffff;
+	padding: 5px 10px;
+	margin: 5px 0px;
+	border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px; 
+}
+
+#mpd.paused {
+    background-color: #161616;
+    color: #ffffff;
+	padding: 5px 10px;
+	margin: 5px 0px;
+	border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px; 
+}
+
+
+#custom-backward {
+    background-color: #161616;
+    color: #ffffff;
+	padding: 5px 5px;
+	margin: 5px 0px;
+	border-radius: 0px;
+}
+
+#custom-playing {
+    background-color: #161616;
+    color: #ffffff;
+	padding: 5px 1px;
+	margin: 5px 0px;
+	border-radius: 0px;
+}
+
+#custom-forward {
+    background-color: #161616;
+    color: #ffffff;
+	padding: 5px 10px;
+	margin: 5px 0px;
+	border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#custom-power {
+    background-color: #161616;
+    border-radius: 50px;
+	margin-right: 10px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	padding-right: 8.5px;
+    padding-left: 8px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#window {
+        background-color: #161616;
+        border-radius: 0px 50px 50px 0px;
+	margin-right: 0px;
+	margin-top: 8px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+    padding: 5px 10px;
+}
+
+#custom-arch {
+        background-color: #161616;
+        border-radius: 50px;
+        margin-right: 0px;
+        margin-top: 8px;
+        margin-bottom: 0px;
+        margin-left: 10px;
+        padding-right: 11px;
+        padding-left: 9px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+}

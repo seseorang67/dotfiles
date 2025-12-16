@@ -1,0 +1,38 @@
+# Alacritty configuration file.
+#
+# A full list of available options can be found in the Alacritty man page.
+# man 5 alacritty
+
+# Font configuration
+[font]
+normal = { family = "monospace", style = "bold" }
+size = 10.0
+
+# Colors (Tomorrow Night)
+[colors.primary]
+#background = "#1d1f21"
+foreground = "#ffffff"
+
+[colors.normal]
+black   = "#1d1f21"
+red     = "#005b96"
+green   = "#005b96"
+yellow  = "#005b96"
+blue    = "#011f4b"
+magenta = "#03396c"
+cyan    = "#005b96"
+white   = "#ffffff"
+
+#[colors.bright]
+#black   = "#666666"
+#red     = "#d54e4e"
+#green   = "#c3d82c"
+#yellow  = "#ffc66d"
+#blue    = "#6699cc"
+#magenta = "#c59fcc"
+#cyan    = "#70c0b1"
+#white   = "#ffffff"
+
+[window]
+#padding = { x = 10, y = 10 }
+opacity = 0.5
