@@ -121,8 +121,8 @@
     },
     "clock": {
         // "timezone": "America/New_York",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "format-alt": "<big>{:%a, %b %d %H:%M}</big>\n<tt><small>{calendar}</small></tt>",
+        "format": "{:%a,  %b %d  %H:%M}"
     },
     "cpu": {
         "format": "{usage}% ",
@@ -215,7 +215,7 @@
     },
     "custom/power": {
         "format" : "⏻",
-		"onclick" : "wlogout"
+		    "on-click" : "~/.config/waybar/scripts/toggle_image.sh"
     },
     "custom/arch": {
         "format" : "󰣇",
