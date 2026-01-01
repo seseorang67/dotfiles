@@ -1,0 +1,174 @@
+#!/usr/bin/env python3
+
+import os
+import subprocess
+import time
+import ipaddress
+import json
+
+#JSON-PROCESS
+scol_dir = os.path.expanduser("~/.scol")
+server_file = os.path.join(scol_dir, "servers.json")
+os.makedirs(scol_dir, exist_ok=True)
+
+def load_data_from_json(server_file):
+    if os.path.exists(server_file):
+        try:
+            with open(server_file, "r") as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            return None
+
+#SUB-PROCESS
+def greeter():
+    subprocess.run(["clear"])
+    print(" ░▒▓███████▓▒░░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓█▓▒░        ")
+    print("░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        ")
+    print("░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        ")
+    print(" ░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        ")
+    print("       ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        ")
+    print("       ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        ")
+    print("░▒▓███████▓▒░ ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓████████▓▒░ ")
+    print("                      v12.30.25                       ")
+
+def server_config():
+    server_ip   = input("Server IP            : ")
+    server_port = input("Server Port          : ")
+    server_name = input("Server Username      : ")
+    return server_ip, server_port, server_name
+
+def autentication(server_ip):
+    try:
+        ipaddress.ip_address(server_ip)
+        return True
+    except ValueError:
+        return False
+
+def save_server_config(server_ip, server_port, server_name, server_file):
+    data = {
+        "server_ip": server_ip,
+        "server_port": server_port,
+        "server_name": server_name
+    }
+    with open(server_file, "w") as f:
+        json.dump(data, f, indent=4)
+
+def validate_config(data):
+    if not isinstance(data, dict):
+        return False
+
+    required_keys = ("server_ip", "server_port", "server_name")
+
+    for key in required_keys:
+        if key not in data or not data[key]:
+            return False
+
+    try:
+        ipaddress.ip_address(data["server_ip"])
+        port = int(data["server_port"])
+        if not (1 <= port <= 65535):
+            return False
+    except ValueError:
+        return False
+
+    return True
+
+def menu(server_ip, server_port, server_name):
+    while True:
+        greeter()
+        print("[ OPTION ]")
+        print("1. Check connection (using npm for linux only)")
+        print("2. Send files local   ->  server")
+        print("3. Send files server  ->  local")
+        print("4. Send folder local  ->  server")
+        print("5. Send folder server ->  local")
+        print("6. Connect to the server")
+        print("7. Edit server configuration")
+        print("8. Save server configuration (json)")
+        print("9. Exit\n")
+
+        user = str(input("select option (1-9): "))
+        print("")
+
+        match user:
+            case "1":
+                if os.name == "nt":
+                    print("coming soon")
+                else:
+                    subprocess.run(["nmap", "-Pn", "-p",
+                                    server_port, server_ip])
+            case "2":
+                local_files  = input("path to your local file       (copy)   : ")
+                server_files = input("path to your server directory (paste)  : ")
+                subprocess.run(["scp", "-P", server_port,
+                                local_files,
+                                f"{server_name}@{server_ip}:{server_files}"])
+            case "3":
+                server_files = input("path to your server file     (copy)   : ")
+                local_files  = input("path to your local directory (paste)  : ")
+                subprocess.run(["scp", "-P", server_port,
+                                f"{server_name}@{server_ip}:{server_files}",
+                                local_files])
+            case "4":
+                local_files  = input("path to your local file       (copy)  : ")
+                server_files = input("path to your server directory (paste) : ")
+                subprocess.run(["scp", "-r", "-P", server_port,
+                                local_files,
+                                f"{server_name}@{server_ip}:{server_files}"])
+            case "5":
+                server_files = input("path to your server file     (copy)   : ")
+                local_files  = input("path to your local directory (paste)  : ")
+                subprocess.run(["scp", "-r", "-P", server_port, 
+                                f"{server_name}@{server_ip}:{server_files}", 
+                                local_files])
+            case "6":
+                subprocess.run(["ssh", server_ip,
+                                "-p", server_port])
+            case "7":
+                server_ip, server_port, server_name = server_config()
+                if autentication(server_ip):
+                    print("\n===== AUTHENTICATION COMPLETE =====")
+                    time.sleep(2)
+                else:
+                    print("\n=====  AUTHENTICATION FAILED  =====")
+                    time.sleep(2)
+            case "8":
+                save_server_config(server_ip, server_port, server_name, server_file)
+            case "9":
+                print("thank you for using this program!")
+                raise SystemExit
+            case _:
+                print("input not valid")
+
+        print("\n=====    PROCESS COMPLETE    =====")
+        time.sleep(3.5)
+
+#MAIN-PROCESS
+while True:
+    greeter()
+    data = load_data_from_json(server_file)
+
+    if data and validate_config(data):
+        server_ip   = data["server_ip"]
+        server_port = data["server_port"]
+        server_name = data["server_name"]
+        print("saved server configuration found!")
+        time.sleep(1.5)
+        use = input("use saved config? [Y/n]: ")
+        if use == "n":
+            server_ip, server_port, server_name = server_config()
+        else:
+            print("using 'servers.json' as a main configuration...")
+    else:
+        greeter()
+        server_ip, server_port, server_name = server_config()
+    time.sleep(2)
+
+    if autentication(server_ip):
+        print("\n===== AUTHENTICATION COMPLETE =====")
+        time.sleep(2)
+        menu(server_ip, server_port, server_name)
+    else:
+        print("\n=====  AUTHENTICATION FAILED  =====")
+        time.sleep(2)
+        subprocess.run("clear")
