@@ -1,0 +1,283 @@
+#!/usr/bin/env python3
+
+import os
+import subprocess
+import time
+import ipaddress
+import json
+
+#JSON-PROCESS
+scol_dir = os.path.expanduser("~/.scol")
+server_file = os.path.join(scol_dir, "servers.json")
+os.makedirs(scol_dir, exist_ok=True)
+
+def load_data_from_json(server_file):
+    if os.path.exists(server_file):
+        try:
+            with open(server_file, "r") as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            return None
+
+#SUB-PROCESS
+def greeter():
+    subprocess.run(["clear"])
+    print("    ███████╗ ██████╗ ██████╗ ██╗        ██╗  ██╗    ")
+    print("    ██╔════╝██╔════╝██╔═══██╗██║        ╚██╗██╔╝    ")
+    print("    ███████╗██║     ██║   ██║██║         ╚███╔╝     ")
+    print("    ╚════██║██║     ██║   ██║██║         ██╔██╗     ")
+    print("    ███████║╚██████╗╚██████╔╝███████╗   ██╔╝ ██╗    ")
+    print("    ╚══════╝ ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝  ╚═╝    ")
+    print("==========    SERVER-CONSOLE  V1.10.26    ==========\n")
+
+def server_config():
+    greeter()
+    print("Server IP            : ")
+    input_user()
+    server_ip = input("\033[2A\033[1C IP > ")
+    sip = f"Server IP            : {server_ip}"
+
+    greeter()
+    print(sip)
+    print("Server Port          : ")
+    input_user()
+    server_port = input("\033[2A\033[1C Port > ")
+    spo = f"Server Port          : {server_port}"
+
+    greeter()
+    print(sip)
+    print(spo)
+    print("Server Username      : ")
+    input_user()
+    server_name = input("\033[2A\033[1C User > ")
+    sus = f"Server Username      : {server_name}"
+
+    greeter()
+    print(sip)
+    print(spo)
+    print(sus)
+
+    return server_ip, server_port, server_name
+
+def autentication(server_ip):
+    try:
+        ipaddress.ip_address(server_ip)
+        return True
+    except ValueError:
+        return False
+
+def save_server_config(server_ip, server_port, server_name, server_file):
+    data = {
+        "server_ip": server_ip,
+        "server_port": server_port,
+        "server_name": server_name
+    }
+    with open(server_file, "w") as f:
+        json.dump(data, f, indent=4)
+
+def validate_config(data):
+    if not isinstance(data, dict):
+        return False
+
+    required_keys = ("server_ip", "server_port", "server_name")
+
+    for key in required_keys:
+        if key not in data or not data[key]:
+            return False
+
+    try:
+        ipaddress.ip_address(data["server_ip"])
+        port = int(data["server_port"])
+        if not (1 <= port <= 65535):
+            return False
+    except ValueError:
+        return False
+
+    return True
+
+def help_option():
+    print("┌────────┬─────────────────────────────────────────┐")
+    print("│ OPTION │ DESCRIPTION                             │")
+    print("├────────┼─────────────────────────────────────────┤")
+    print("│  chck  │ Check connection                        │")
+    print("│  uplf  │ Upload file   (local  -> server)        │")
+    print("│  dwnf  │ Download file (server -> local)         │")
+    print("│  upld  │ Upload directory                        │")
+    print("│  dwnd  │ Download directory                      │")
+    print("│  conn  │ Connect to the server                   │")
+    print("│  conf  │ Edit server configuration               │")
+    print("│  save  │ Save server configuration               │")
+    print("│  exit  │ Exit                                    │")
+    print("└────────┴─────────────────────────────────────────┘")
+
+def input_user():
+    print("\n┌──────────────────────────────────────────────────┐")
+    print("│                                                  │")
+    print("└──────────────────────────────────────────────────┘")
+
+def menu(server_ip, server_port, server_name):
+    while True:
+        input_user()
+        user = input("\033[2A\033[1C ~ > ")
+        print("\n")
+
+        match user:
+            case "chck":
+                greeter()
+                subprocess.run(["nmap", "-Pn", "-p",
+                                server_port, server_ip])
+            case "uplf":
+                greeter()
+                print("path to your local file : ")
+                input_user()
+                local_files  = input("\033[2A\033[1C Path > ")
+                pthl = f"path to your local file : {local_files}"
+
+                greeter()
+                print(pthl)
+                print("path to your server dir : ")
+                input_user()
+                server_files  = input("\033[2A\033[1C Path > ")
+                pths = f"path to your server dir : {server_files}"
+
+                greeter()
+                print(pthl)
+                print(pths)
+                print("")
+
+                subprocess.run(["scp", "-P", server_port,
+                                local_files,
+                                f"{server_name}@{server_ip}:{server_files}"])
+            case "dwnf":
+                greeter()
+                print("path to your server file : ")
+                input_user()
+                server_files  = input("\033[2A\033[1C Path > ")
+                pths = f"path to your server file : {server_files}"
+
+                greeter()
+                print(pths)
+                print("path to your local dir   : ")
+                input_user()
+                local_files  = input("\033[2A\033[1C Path > ")
+                pthl = f"path to your local dir   : {local_files}"
+
+                greeter()
+                print(pths)
+                print(pthl)
+                print("")
+
+                subprocess.run(["scp", "-P", server_port,
+                                f"{server_name}@{server_ip}:{server_files}",
+                                local_files])
+            case "upld":
+                greeter()
+                print("path to your local dir  : ")
+                input_user()
+                local_files  = input("\033[2A\033[1C Path > ")
+                pthl = f"path to your local dir  : {local_files}"
+
+                greeter()
+                print(pthl)
+                print("path to your server dir : ")
+                input_user()
+                server_files  = input("\033[2A\033[1C Path > ")
+                pths = f"path to your server dir : {server_files}"
+
+                greeter()
+                print(pthl)
+                print(pths)
+                print("")
+
+                subprocess.run(["scp", "-r", "-P", server_port,
+                                local_files,
+                                f"{server_name}@{server_ip}:{server_files}"])
+            case "dwnd":
+                greeter()
+                print("path to your server dir  : ")
+                input_user()
+                server_files  = input("\033[2A\033[1C Path > ")
+                pths = f"path to your server dir  : {server_files}"
+
+                greeter()
+                print(pths)
+                print("path to your local dir   : ")
+                input_user()
+                local_files  = input("\033[2A\033[1C Path > ")
+                pthl = f"path to your local dir   : {local_files}"
+
+                greeter()
+                print(pths)
+                print(pthl)
+                print("")
+ 
+                subprocess.run(["scp", "-r", "-P", server_port, 
+                                f"{server_name}@{server_ip}:{server_files}", 
+                                local_files])
+            case "conn":
+                subprocess.run("clear")
+                subprocess.run(["ssh", server_ip,
+                                "-p", server_port])
+            case "conf":
+                greeter()
+                server_ip, server_port, server_name = server_config()
+                if autentication(server_ip):
+                    print("\n==========    AUTHENTICATION  SUCCSESS    ==========")
+                    time.sleep(2)
+                else:
+                    print("\n==========     AUTHENTICATION  FAILED     ==========")
+                    time.sleep(2)
+            case "save":
+                greeter_process()
+                time.sleep(0.5)
+                print("Saving...")
+                time.sleep(2)
+                save_server_config(server_ip, server_port, server_name, server_file)
+
+            case "exit":
+                subprocess.run("clear")
+                print("Thank you for using this tool!")
+                raise SystemExit
+
+            case "--help":
+                greeter()
+                help_option()
+
+            case _:
+                print("\033[3A\033[6CInput not valid!\r")
+                time.sleep(1)
+                greeter()
+
+        #print("\n==========        PROCESS COMPLETE        ==========")
+        #time.sleep(2)
+
+#MAIN-PROCESS
+while True:
+    greeter()
+    data = load_data_from_json(server_file)
+
+    if data and validate_config(data):
+        server_ip   = data["server_ip"]
+        server_port = data["server_port"]
+        server_name = data["server_name"]
+        print("saved server configuration found!")
+        time.sleep(1.5)
+        use = input("use saved config? [Y/n]: ")
+        if use == "n":
+            server_ip, server_port, server_name = server_config()
+        else:
+            print("using 'servers.json' as a main configuration...")
+    else:
+        greeter()
+        server_ip, server_port, server_name = server_config()
+    time.sleep(2)
+
+    if autentication(server_ip):
+        print("\n==========    AUTHENTICATION  SUCCSESS    ==========")
+        time.sleep(2)
+        greeter()
+        menu(server_ip, server_port, server_name)
+    else:
+        print("\n==========     AUTHENTICATION  FAILED     ==========")
+        time.sleep(2)
+        subprocess.run("clear")
