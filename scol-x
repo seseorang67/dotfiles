@@ -228,7 +228,7 @@ def menu(server_ip, server_port, server_name):
                     print("\n==========     AUTHENTICATION  FAILED     ==========")
                     time.sleep(2)
             case "save":
-                greeter_process()
+                greeter()
                 time.sleep(0.5)
                 print("Saving...")
                 time.sleep(2)
