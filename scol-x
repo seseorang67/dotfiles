@@ -28,7 +28,7 @@ def greeter():
     print("    ╚════██║██║     ██║   ██║██║         ██╔██╗     ")
     print("    ███████║╚██████╗╚██████╔╝███████╗   ██╔╝ ██╗    ")
     print("    ╚══════╝ ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝  ╚═╝    ")
-    print("==========    SERVER-CONSOLE  V1.10.26    ==========\n")
+    print("==========    SERVER-CONSOLE  V2.12.26    ==========\n")
 
 def server_config():
     greeter()
@@ -99,15 +99,15 @@ def help_option():
     print("┌────────┬─────────────────────────────────────────┐")
     print("│ OPTION │ DESCRIPTION                             │")
     print("├────────┼─────────────────────────────────────────┤")
-    print("│  chck  │ Check connection                        │")
-    print("│  uplf  │ Upload file   (local  -> server)        │")
-    print("│  dwnf  │ Download file (server -> local)         │")
-    print("│  upld  │ Upload directory                        │")
-    print("│  dwnd  │ Download directory                      │")
-    print("│  conn  │ Connect to the server                   │")
-    print("│  conf  │ Edit server configuration               │")
-    print("│  save  │ Save server configuration               │")
-    print("│  exit  │ Exit                                    │")
+    print("│   #1   │ Check connection                        │")
+    print("│   #2   │ Upload file   (local  -> server)        │")
+    print("│   #3   │ Download file (server -> local)         │")
+    print("│   #4   │ Upload directory                        │")
+    print("│   #5   │ Download directory                      │")
+    print("│   #6   │ Connect to the server                   │")
+    print("│   #7   │ Edit server configuration               │")
+    print("│   #8   │ Save server configuration               │")
+    print("│   #9   │ Exit                                    │")
     print("└────────┴─────────────────────────────────────────┘")
 
 def input_user():
@@ -122,11 +122,11 @@ def menu(server_ip, server_port, server_name):
         print("\n")
 
         match user:
-            case "chck":
+            case "1":
                 greeter()
                 subprocess.run(["nmap", "-Pn", "-p",
                                 server_port, server_ip])
-            case "uplf":
+            case "2":
                 greeter()
                 print("path to your local file : ")
                 input_user()
@@ -148,7 +148,7 @@ def menu(server_ip, server_port, server_name):
                 subprocess.run(["scp", "-P", server_port,
                                 local_files,
                                 f"{server_name}@{server_ip}:{server_files}"])
-            case "dwnf":
+            case "3":
                 greeter()
                 print("path to your server file : ")
                 input_user()
@@ -170,7 +170,7 @@ def menu(server_ip, server_port, server_name):
                 subprocess.run(["scp", "-P", server_port,
                                 f"{server_name}@{server_ip}:{server_files}",
                                 local_files])
-            case "upld":
+            case "4":
                 greeter()
                 print("path to your local dir  : ")
                 input_user()
@@ -192,7 +192,7 @@ def menu(server_ip, server_port, server_name):
                 subprocess.run(["scp", "-r", "-P", server_port,
                                 local_files,
                                 f"{server_name}@{server_ip}:{server_files}"])
-            case "dwnd":
+            case "5":
                 greeter()
                 print("path to your server dir  : ")
                 input_user()
@@ -214,11 +214,11 @@ def menu(server_ip, server_port, server_name):
                 subprocess.run(["scp", "-r", "-P", server_port, 
                                 f"{server_name}@{server_ip}:{server_files}", 
                                 local_files])
-            case "conn":
+            case "6":
                 subprocess.run("clear")
                 subprocess.run(["ssh", server_ip,
                                 "-p", server_port])
-            case "conf":
+            case "7":
                 greeter()
                 server_ip, server_port, server_name = server_config()
                 if autentication(server_ip):
@@ -227,19 +227,19 @@ def menu(server_ip, server_port, server_name):
                 else:
                     print("\n==========     AUTHENTICATION  FAILED     ==========")
                     time.sleep(2)
-            case "save":
+            case "8":
                 greeter()
                 time.sleep(0.5)
                 print("Saving...")
                 time.sleep(2)
                 save_server_config(server_ip, server_port, server_name, server_file)
 
-            case "exit":
+            case "9":
                 subprocess.run("clear")
                 print("Thank you for using this tool!")
                 raise SystemExit
 
-            case "--help":
+            case "help":
                 greeter()
                 help_option()
 
@@ -276,6 +276,7 @@ while True:
         print("\n==========    AUTHENTICATION  SUCCSESS    ==========")
         time.sleep(2)
         greeter()
+        print("#If you are confused about what are you goin to do, try 'help' for more information!")
         menu(server_ip, server_port, server_name)
     else:
         print("\n==========     AUTHENTICATION  FAILED     ==========")
