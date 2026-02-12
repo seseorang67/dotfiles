@@ -276,7 +276,7 @@ while True:
         print("\n==========    AUTHENTICATION  SUCCSESS    ==========")
         time.sleep(2)
         greeter()
-        print("#If you are confused about what are you goin to do, try 'help' for more information!")
+        print("#If you are confused about what are you going to do, try 'help' for more information!")
         menu(server_ip, server_port, server_name)
     else:
         print("\n==========     AUTHENTICATION  FAILED     ==========")
